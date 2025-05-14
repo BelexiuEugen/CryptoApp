@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     
+    @Environment(HomeViewModel.self) private var vm: HomeViewModel
     @State private var showPortofolio: Bool = false;
     
     var body: some View {
@@ -17,6 +18,19 @@ struct HomeView: View {
             
             VStack{
                 homeHeader
+                
+                columnTitle
+                
+                if !showPortofolio{
+                    allCoinsList
+                    .transition(.move(edge: .leading))
+                }
+                
+                if showPortofolio{
+                    portofolioCoinsList
+                        .transition(.move(edge: .trailing))
+                }
+                
                 Spacer(minLength: 0)
             }
         }
@@ -28,6 +42,7 @@ struct HomeView: View {
         HomeView()
             .toolbarVisibility(.hidden)
     }
+    .environment(DeveloperPreview.instance.homeVM)
 }
 
 extension HomeView{
@@ -58,6 +73,41 @@ extension HomeView{
                     }
                 }
         }
+        .padding(.horizontal)
+    }
+    
+    private var allCoinsList: some View{
+        List{
+            ForEach(vm.allCoins){ coin in
+                CoinRowView(coin: coin, showHoldingsColumn: false)
+                    .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
+            }
+        }
+        .listStyle(.plain)
+    }
+    
+    private var portofolioCoinsList: some View{
+        List{
+            ForEach(vm.allCoins){ coin in
+                CoinRowView(coin: coin, showHoldingsColumn: true)
+                    .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
+            }
+        }
+        .listStyle(.plain)
+    }
+    
+    private var columnTitle: some View{
+        HStack{
+            Text("Coin")
+            Spacer()
+            if showPortofolio{
+                Text("Holdings")
+            }
+            Text("Price")
+                .frame(width: UIScreen.main.bounds.width / 3.5, alignment: .trailing)
+        }
+        .font(.caption)
+        .foregroundStyle(Color.theme.secondaryText)
         .padding(.horizontal)
     }
 }

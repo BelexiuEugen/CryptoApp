@@ -84,6 +84,7 @@ extension HomeView{
             }
         }
         .listStyle(.plain)
+        .padding(.horizontal)
     }
     
     private var portofolioCoinsList: some View{

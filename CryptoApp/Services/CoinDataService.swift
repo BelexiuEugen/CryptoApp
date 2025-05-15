@@ -21,32 +21,14 @@ class CoinDataService{
     
     private func getCoins(){
         
-        guard let url = url
-        else { return }
+        guard let url = url else { return }
         
-        coinSubscribtion = URLSession.shared.dataTaskPublisher(for: url)
-            .subscribe(on: DispatchQueue.global(qos: .default))
-            .tryMap { output in
-                guard let response = output.response as? HTTPURLResponse,
-                      response.statusCode >= 200 && response.statusCode < 300 else{
-                    throw URLError(.badServerResponse)
-                }
-                return output.data
-            }
-            .receive(on: DispatchQueue.main)
+        coinSubscribtion = NetworkingManager.download(url: url)
             .decode(type: [CoinModel].self, decoder: JSONDecoder())
-            .sink { completion in
-                switch completion{
-                case .finished:
-                    break
-                case .failure(let error):
-                    print(error.localizedDescription)
-                
-                }
-            } receiveValue: { [weak self] returnedCoins in
+            .sink(receiveCompletion: NetworkingManager.handleCompletion, receiveValue: { [weak self] returnedCoins in
                 self?.allCoins = returnedCoins
                 self?.coinSubscribtion?.cancel()
-            }
+            })
 //            .store(in: &cancellables)
 
     }

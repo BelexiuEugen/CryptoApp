@@ -7,17 +7,31 @@
 
 import SwiftUI
 
+// https://api.coingecko.com/api/v3/global
+
 struct HomeView: View {
     
     @Environment(HomeViewModel.self) private var vm: HomeViewModel
-    @State private var showPortofolio: Bool = false;
+    @State private var showPortofolio: Bool = false; // animate right
+    @State private var showPortofolioView: Bool = false; // newSheet
     
     var body: some View {
+        
+        @Bindable var vm = vm;
+        
         ZStack{
             Color.theme.background.ignoresSafeArea()
+                .sheet(isPresented: $showPortofolioView) {
+                    PortofolioView()
+                        .environment(vm)
+                }
             
             VStack{
                 homeHeader
+                
+                HomeStatsView(showPortofolio: $showPortofolio)
+                
+                SearchBarView(serachText: $vm.serachText)
                 
                 columnTitle
                 
@@ -51,6 +65,11 @@ extension HomeView{
         HStack{
             CircleButtonView(iconName: showPortofolio ? "plus" : "info")
                 .animation(nil, value: showPortofolio)
+                .onTapGesture {
+                    if showPortofolio{
+                        showPortofolioView.toggle()
+                    }
+                }
                 .background {
                     CircleButtonAnimationView(animated: $showPortofolio)
                 }
@@ -89,12 +108,13 @@ extension HomeView{
     
     private var portofolioCoinsList: some View{
         List{
-            ForEach(vm.allCoins){ coin in
+            ForEach(vm.portofolioCoins){ coin in
                 CoinRowView(coin: coin, showHoldingsColumn: true)
                     .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
             }
         }
         .listStyle(.plain)
+        .padding(.horizontal)
     }
     
     private var columnTitle: some View{

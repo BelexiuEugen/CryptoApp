@@ -23,6 +23,10 @@ class DeveloperPreview{
     
     let homeVM = HomeViewModel()
     
+    let state1 = StatisticModel(title: "Market Cap", value: "$12.5Bn", percentageChange: 25.34)
+    let state2 = StatisticModel(title: "Total Value", value: "$1.23Tr")
+    let state3 = StatisticModel(title: "Portofoliu", value: "$50.4k", percentageChange: -12.34)
+    
     let coin = CoinModel(
        id: "bitcoin",
        symbol: "btc",

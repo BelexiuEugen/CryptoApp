@@ -30,6 +30,7 @@ struct PortofolioView: View {
                     }
                 }
             }
+            .background(Color.theme.background)
             .navigationTitle("Edit Portofolio")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -41,7 +42,7 @@ struct PortofolioView: View {
                 }
             }
             .onChange(of: vm.serachText) {
-                if vm.serachText == ""{
+                if vm.serachText.isEmpty{
                     removeSelectedCoins()
                 }
             }
@@ -59,7 +60,7 @@ extension PortofolioView{
     private var coinLogoList: some View{
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: 10){
-                ForEach(vm.serachText.isEmpty ? vm.portofolioCoins : vm.allCoins){ coin in
+                ForEach(vm.allCoins){ coin in
                     CoinLogoView(coin: coin)
                         .frame(width: 75)
                         .padding(4)

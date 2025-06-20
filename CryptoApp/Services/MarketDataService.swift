@@ -19,7 +19,7 @@ class MarketDataService{
         getData()
     }
     
-    private func getData(){
+    func getData(){
         
         guard let url = url else { return }
         
